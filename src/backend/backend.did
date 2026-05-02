@@ -1,0 +1,34 @@
+type Chain = variant {
+  EthMainnet;
+  EthSepolia;
+  ArbitrumOne;
+  BaseMainnet;
+  OptimismMainnet;
+};
+
+type GateRequest = record {
+  chain : Chain;
+  tokenAddress : text;
+  threshold : nat;
+  cid : text;
+  evmAddress : text;
+  transportPublicKey : blob;
+};
+
+type GateError = variant {
+  InsufficientBalance : record { required : nat; actual : nat };
+  InvalidAddress : text;
+  InvalidThreshold;
+  EvmRpcError : text;
+  VetKDError : text;
+};
+
+type GateResult = variant {
+  ok : blob;
+  err : GateError;
+};
+
+service : {
+  requestDecryptionKey : (GateRequest) -> (GateResult);
+  getVetKDPublicKey : () -> (blob);
+}
