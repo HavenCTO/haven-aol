@@ -10,6 +10,7 @@ import re
 from typing import Optional
 
 import haven_aol_vetkeys
+from icp_principal import Principal
 
 # Valid chain variant names (must match Candid Chain type exactly)
 VALID_CHAINS = frozenset({
@@ -188,27 +189,7 @@ def serialize_gate_metadata(metadata: dict) -> str:
 def _principal_text_to_bytes(text: str) -> bytes:
     """Convert a textual principal (e.g. 'bkyz2-fmaaa-aaaaa-qaaaq-cai') to raw bytes.
 
-    Principal encoding: Base32 (lowercase, no padding) with CRC32 check.
-    Groups of 5 chars separated by dashes.
+    Uses ``Principal.from_str`` from the ``icp-py-core`` distribution on PyPI
+    (``icp_principal``), matching the IC interface spec checksum and base32 rules.
     """
-    import struct
-    import zlib
-
-    # Remove dashes and decode base32
-    clean = text.replace("-", "").upper()
-    # Add padding for base32
-    padding = (8 - len(clean) % 8) % 8
-    raw = base64.b32decode(clean + "=" * padding)
-
-    # First 4 bytes are CRC32 checksum (big-endian)
-    if len(raw) < 4:
-        raise ValueError(f"Invalid principal text: {text!r}")
-    checksum = struct.unpack(">I", raw[:4])[0]
-    body = raw[4:]
-
-    # Verify checksum
-    computed = zlib.crc32(body) & 0xFFFFFFFF
-    if checksum != computed:
-        raise ValueError(f"Principal checksum mismatch for {text!r}")
-
-    return body
+    return Principal.from_str(text).bytes

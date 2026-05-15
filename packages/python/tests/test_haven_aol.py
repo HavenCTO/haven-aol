@@ -150,6 +150,18 @@ class TestDeriveVerificationKey:
         with pytest.raises(ValueError):
             derive_verification_key(bytes(10), key_name="nonexistent_key")
 
+    def test_invalid_text_principal_raises(self):
+        with pytest.raises(
+            ValueError,
+            match="invalid base32 principal string|principal checksum mismatch|principal too short|principal round-trip mismatch",
+        ):
+            derive_verification_key("not-a-valid-principal", key_name="key_1")
+
+    def test_corrupt_text_principal_raises(self):
+        """Malformed principal must not be accepted."""
+        with pytest.raises(ValueError, match="principal round-trip mismatch"):
+            derive_verification_key("aaaaa-ab", key_name="key_1")
+
 
 # ── IBE encryption tests ──
 

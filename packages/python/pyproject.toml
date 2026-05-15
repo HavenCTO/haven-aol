@@ -6,6 +6,8 @@ requires-python = ">=3.10"
 dependencies = [
     "haven-aol-vetkeys>=0.1.0",
     "cryptography>=41.0",
+    # Internet Computer principal parsing; install from PyPI only (not the ./icp-py-core reference tree).
+    "icp-py-core>=2.3.1",
 ]
 
 [project.optional-dependencies]
