@@ -8,7 +8,7 @@ name = "haven_aol_vetkeys"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.24", features = ["extension-module"] }
-ic-vetkeys = "0.6"
-ic-cdk = "0.19"
+pyo3 = { version = "0.28", features = ["extension-module"] }
+ic-vetkeys = "0.7"
+ic-management-canister-types = "0.7"
 rand = "0.8"
